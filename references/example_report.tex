@@ -1,0 +1,526 @@
+%\documentclass[a4paper,12pt]{article}
+\documentclass{amsart}
+\usepackage{amsthm,amsmath,amssymb,amscd,epic}%german,psfrag,
+
+\usepackage[mathscr]{eucal}
+ 
+
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\co}{\mathcal O}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cW}{\mathcal{W}}
+
+\newcommand{\A}{\mathbb A}
+\newcommand{\C}{\mathbb C}
+\newcommand{\F}{\mathbb F}
+\newcommand{\bG}{\mathbb G}
+\newcommand{\N}{\mathbb N}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+
+\newcommand{\kk}{\mathit{k}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\br}{\mathbf{r}}
+
+\newcommand{\fm}{\mathfrak{m}}
+\newcommand{\fp}{\mathfrak{p}}
+\newcommand{\fq}{\mathfrak{q}}
+\newcommand{\fA}{\mathfrak{A}}
+\newcommand{\fB}{\mathfrak{B}}
+\newcommand{\fI}{\mathfrak I}
+\newcommand{\fJ}{\mathfrak J}
+\newcommand{\fR}{\mathfrak{R}} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% change: {\mathfrak{P}}
+\newcommand{\fT}{\mathfrak T}
+
+\newcommand{\vB}{\check{B}}
+\newcommand{\vC}{\check{C}}
+\newcommand{\vH}{\check{H}}
+\newcommand{\vL}{\check{L}}
+\newcommand{\vZ}{\check{Z}}
+\newcommand{\vcC}{\check{\mathcal{C}}}
+
+%%%%%%%%%%%%%%%%%%Greek letters%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\al}{\alpha}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\Om}{\Omega}
+\newcommand{\om}{\omega}
+\newcommand{\bmu}{\text{\boldmath{$\mu$}}}
+\newcommand{\z}{\zeta}
+\newcommand{\G}{\Gamma}
+\newcommand{\eps}{\epsilon}
+\newcommand{\lam}{\lambda}
+\newcommand{\ga}{\gamma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Mod}{\mathit{Mod}}
+\newcommand{\Ab}{\mathit{Ab}}
+\newcommand{\Qcoh}{\mathit{Qcoh}}
+\newcommand{\Coh}{\mathit{Coh}}
+\newcommand{\coh}{\mathit{coh}}
+\newcommand{\rmod}{\mathrm{Mod}}
+\newcommand{\rRep}{\mathrm{Rep}}
+\newcommand{\rIrr}{\mathrm{Irr}}
+\newcommand{\rinj}{\mathrm{inj}}
+\newcommand{\rInj}{\mathrm{Inj}}
+\newcommand{\rsoc}{\mathrm{soc}}
+\newcommand{\JH}{\mathrm{JH}}
+\newcommand{\Stab}{\mathrm{Stab}}
+
+\newcommand{\Max}{\text{Max}}
+
+
+\def\dim{\mathrm{dim}}
+\def\Ker{\mathrm{Ker}}
+\def\deg{\mathrm{deg}}
+\def\Spec{\mathrm{Spec}}
+\def\Supp{\mathrm{Supp}}
+\def\Ann{\mathrm{Ann}}
+\def\Ass{\mathrm{Ass}}
+\def\q{\mathfrak {q}}
+\def\p{\mathfrak {p}}
+\def\m{\mathfrak {m}}
+\def\a{\mathfrak {a}}
+\def\I{\mathfrak {I}}
+\def\x{\chi}
+\def\gr{\mathrm{gr}}
+\def\pp{\mathbb{P}}
+\def\oo{\mathcal{O}}
+\def\Ht{\mathrm{ht}} % can't define $\ht$
+\def\Fr{\mathrm{Fr}}
+\def\St{\mathrm{St}} % the Steinberg representation
+\def\Sp{\mathrm{Sp}}
+\def\val{\mathrm{val}}
+\def\red{\mathrm{red}}
+\def\Fil{\mathrm{Fil}}
+\def\rg{\mathrm{rg}}
+
+\def\lra{\longrightarrow}
+\def\llra{\Longleftrightarrow}
+\def\ho{\hookrightarrow}
+\def\tw{\twoheadrightarrow}
+\def\da{\dashrightarrow}
+\newcommand{\calF}{\mathcal{F}}
+\DeclareMathOperator{\im}{\mathrm Im}
+\DeclareMathOperator{\coker}{\mathrm Coker }
+\DeclareMathOperator{\CoIm}{\mathrm CoIm}
+
+\DeclareMathOperator{\End}{\mathrm End}
+\DeclareMathOperator{\Hom}{\mathrm Hom}
+\DeclareMathOperator{\cHom}{\mathcal{H}\mathit{om}}
+\DeclareMathOperator{\cRHom}{\mathrm{R}\cHom}
+\DeclareMathOperator{\RHom}{\mathrm {RHom}}
+\DeclareMathOperator{\Ext}{\mathrm Ext}
+\DeclareMathOperator{\cExt}{\mathcal{E}\mathit{xt}}
+\newcommand{\Exti}{\Ext^i}
+\newcommand{\cExti}{\cExt^i}
+\DeclareMathOperator{\Tor}{\mathrm Tor}
+\DeclareMathOperator{\cTor}{\mathcal{T}\mathit{or}}
+\DeclareMathOperator{\cEnd}{\mathcal{E}\mathit{nd}}
+
+\DeclareMathOperator{\Frac}{\mathrm Frac}
+\DeclareMathOperator{\GL}{\mathrm GL}
+\DeclareMathOperator{\SL}{\mathrm SL}
+\DeclareMathOperator{\Aut}{\mathrm Aut}
+\DeclareMathOperator{\ch}{\mathrm char}
+\DeclareMathOperator{\cone}{\mathrm Cone}
+\DeclareMathOperator{\depth}{\mathrm depth}
+\DeclareMathOperator{\Der}{\mathrm Der}
+\DeclareMathOperator{\Et}{\mathrm{Et}}
+\DeclareMathOperator{\Gal}{\mathrm Gal}
+\DeclareMathOperator{\id}{\mathrm Id}
+\DeclareMathOperator{\ord}{\mathrm ord}
+\DeclareMathOperator{\Proj}{\mathrm {Proj}}
+\DeclareMathOperator{\bProj}{\mathbf{Proj}}
+\DeclareMathOperator{\projdim}{\mathrm {proj\,dim}}
+\DeclareMathOperator{\qis}{\mathrm qis}
+\DeclareMathOperator{\rad}{\mathrm {rad}}
+\DeclareMathOperator{\rank}{\mathrm rank}
+\DeclareMathOperator{\Sel}{\mathrm Sel }
+\DeclareMathOperator{\Spf}{\mathrm{Spf}}
+\DeclareMathOperator{\Sym}{\mathrm{Sym}}
+\DeclareMathOperator{\tr}{\mathrm Tr}
+\DeclareMathOperator{\Rep}{\underline{\mathrm Rep}}
+\DeclareMathOperator{\Ind}{\mathrm {Ind}}
+\DeclareMathOperator{\ind}{\mathrm {ind}}
+\DeclareMathOperator{\cInd}{\mathrm{c-Ind}}
+\DeclareMathOperator{\triv}{\mathrm{triv}}
+\DeclareMathOperator{\Alg}{\mathrm{Alg}}
+\DeclareMathOperator{\Irr}{\mathrm{Irr}}
+\DeclareMathOperator{\plim}{\varprojlim}
+\DeclareMathOperator{\ilim}{\varinjlim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newcommand{\unD}[2][B]{\underline{D}_{#1}({#2})}
+\newcommand{\unRep}[2][F]{\underline{\mathrm{Rep}}_{#1}^{#2}(G)}
+\newcommand{\fixed}[1][V]{(B\otimes_{F}{#1})^{G}}
+\newcommand{\unM}[1][V]{\underline{M}(#1)}
+\newcommand{\unV}[1][M]{\underline{V}({#1})}
+\newcommand{\BFV}{B\otimes_{F}V}
+\newcommand{\BEV}{B\otimes_{E}V}
+\newcommand{\xto}[1][]{\xrightarrow{#1}}
+\newcommand{\vvec}[2]{\ensuremath{#1_1,\ldots,#1_{#2}}}
+\newcommand{\simto}{%\stackrel{\sim}{\to}}%isomorphic to
+\xto[\sim]} %isomorphic to;
+\newcommand{\EFpV}[1][V]{E^s\otimes_{F_p}{#1}}
+\newcommand{\ba}[1][K]{\bar{#1}}
+\newcommand{\Kinf}{K_{\infty}}
+\newcommand{\Winf}{W_{\infty}}
+\newcommand{\cKinf}{\hat{K}_{\infty}}
+\newcommand{\cWinf}{\hat{W}_{\infty}}
+\newcommand{\Mn}{\mathrm{M}_n}
+\newcommand{\cM}{\mathcal{M}}
+\DeclareMathOperator{\etale}{\acute{e}tale}
+\DeclareMathOperator{\et}{\acute{e}t}
+\DeclareMathOperator{\Eur}{\widehat{\cE^{ur}}}
+\newcommand{\plimm}{\varprojlim\limits}
+\newcommand{\ilimm}{\varinjlim\limits}
+\newcommand{\summ}{\sum\limits}
+\newcommand{\limm}{\lim\limits}
+\newcommand{\prodd}{\prod\limits}
+\newcommand{\bigcupp}{\bigcup\limits}
+\newcommand{\bigcapp}{\bigcap\limits}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\newcommand{\bFpt}{\overline{\F}_p^{\times}}
+\newcommand{\bFp}{\overline{\F}_p}
+\newcommand{\bQp}{\overline{\Q}_p}
+\newcommand{\ModM}[2][\gamma]{M_{#1}^{#2}}
+\newcommand{\ModL}[2][\gamma]{L_{#1}^{#2}}
+\newcommand{\matr}[4]{\begin{pmatrix}{#1}&{#2}\\ {#3}&{#4}\end{pmatrix}}
+\newcommand{\smatr}[4]{\bigl(\begin{smallmatrix} {#1}& {#2}\\ {#3}&{#4}\end{smallmatrix}\bigl)}
+\newcommand{\bmd}{b\hspace{-2mm}\mod d}
+\newcommand{\fmm}{\hspace{5mm} }
+\newcommand{\gen}[1]{\langle{#1}\rangle_{\bFp}}
+\newcommand{\ModV}[2][\bFp]{V_{{#2},{#1}}}
+\newcommand{\TModV}[3]{V_{{#1},\bFp}\otimes\ldots\otimes V_{{#2},\bFp}^{\mathrm{Fr}^{#3}}}
+\newcommand{\TModVD}[4]{V_{{#1},\bFp}\otimes\ldots\otimes V_{{#2},\bFp}^{\mathrm{Fr}^{#3}}\otimes(\det)^{#4}}
+\newcommand{\COEF}[1][G]{\mathcal{COEF}_{#1}}
+\newcommand{\DIAG}{\mathcal{DIAG}}
+\newcommand{\MOD}{\mathrm{MOD}}
+\newcommand{\WD}{\mathrm{WD}}
+\newcommand{\rec}{\mathrm{rec}}
+\newcommand{\unit}{\mathrm{unit}}
+\newcommand{\diag}{\mathrm{diag}}
+
+
+\newcommand{\ide}{\mathbbm{1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\dis{\displaystyle}
+
+\newtheorem{theorem}{Th\eb or\ed me}[section]
+\newtheorem{lemma}[theorem]{Lemme}
+\newtheorem{cor}[theorem]{Corollaire}
+\newtheorem{prop}[theorem]{Proposition}
+
+
+\theoremstyle{definition}
+\newtheorem{defn}[theorem]{D\eb finition}
+\newtheorem{conj}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{rem}[theorem]{Remarque}
+\newtheorem{examples}[theorem]{Exemples}
+
+%%%%
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+\newcommand{\lla}{\longleftarrow}
+ 
+\newcommand{\psp}{\Psi^+}
+\newcommand{\psm}{\Psi^-}
+\newcommand{\php}{\Phi^+}
+\newcommand{\phm}{\Phi^-}
+\newcommand{\phhp}{\hat{\Phi}^+}
+\newcommand{\vv}{\vspace{2mm}}
+
+
+\title[]{ \large {\rm Report}    }
+\date{}
+
+
+\begin{document}
+
+\maketitle
+ 
+ 
+ 
+
+ 
+
+The paper under consideration is a contribution to the mod $p$ Langlands program for $\GL_2(L)$, where $L$ is a finite unramified extension of $\Q_p$. Currently, the correspondence is only well-understood for $\GL_2(\Q_p)$. One promising approach to the case $L\neq \Q_p$  is via the  local-global compatibility philosophy which, for  a given residual local representation $\overline{\rho}$ and its globalization $\overline{r}$,  provides a candidate $\GL_2(L)$-representation $\pi_{\rm glob}(\overline{\rho})$ in  spaces of mod $p$   automorphic forms.  However, one of the drawbacks of this construction is that $\pi_{\rm glob}(\overline{\rho})$ could depend on the globalization $\overline{r}$ and also various global choices.
+\vv
+
+In the paper, the authors show that, at least, a small piece of $\pi_{\rm glob}(\overline{\rho})$   indeed depends only on $\overline{\rho}$, namely the $0$-diagram $\mathcal{D}(\overline{\rho}):=(\pi_{\rm glob}(\overline{\rho})^{I_1}\hookrightarrow \pi_{\rm glob}(\overline{\rho})^{K_1})$ in the sense of Breuil-Pa\v{s}k\=unas. Note that the underlying space $\pi_{\rm glob}(\overline{\rho})^{K_1}$ depends only on $\overline{\rho}$ by a previous result of one of the authors (D.L.) (based on previous work of Emerton-Gee-Savitt). 
+The determination of $\mathcal{D}(\overline{\rho})$ is equivalent to determining the values of a certain family of parameters. For the proof of the above independence, they don't (need) compute them explicitly, but rather  identify the values with elements in suitable Galois deformation rings of $\overline{\rho}$.   When  $\overline{\rho}$ is semi-simple, the authors compute explicitly  the values of (some of) the parameters, which    
+answers a question of Breuil [J. Reine Angew. Math., 2014]. This result is important, as is related to the structure of $(\varphi,\Gamma)$-module attached to $\mathcal{D}(\overline{\rho})$, and will play a role in the  $p$-adic Langlands program in this setting. 
+\vv
+
+ The results in the paper are very nice and shall be proved useful in the future. The paper is very clearly written, despite the technical complexity.   \\
+  \textbf{Conclusion}: I strongly recommend the paper for acception in Compositio Math. 
+  \bigskip
+\bigskip
+
+\noindent Here is a list of  remarks/comments.\bigskip
+
+\vv
+
+ \noindent\textbf{Page 1}
+ 
+Line 4 in the introduction: need to define $G_L=\Gal(\overline{L}/L)$
+\vv
+
+
+ \noindent\textbf{Page 5}
+ 
+ Line 1: do you assume $(x_j)_j\neq (p-1)_j$ ?
+ 
+\vv
+
+ \noindent\textbf{Page 7}
+ 
+ Line 8: the summation should be  over $1\leq t\leq k$.
+ 
+ Line -10: in the formula, it is better to write $S_{i_1}^+S_{i_2}^+$ (exchange the order)
+ 
+ Line -9: typo on $v_p(\alpha)$
+ 
+Line -4: in the formula the last index should be $i_{k+1}$ 
+
+\vv
+ \noindent\textbf{Page 9}
+ 
+ 
+
+Line 5 of Section 2.2: $\tau|_H$ should be $\theta|_H$
+
+\vv
+ \noindent\textbf{Page 10}
+
+Line -11: (3) should be (iii)
+
+Line -9: from Lemma 2.8, what I get is $\mathbf{J}_0(i(\xi_2)+i(\xi_1)+r, -i(\xi_1)-r)$. 
+ 
+\vv
+
+ \noindent\textbf{Page 11}
+
+Line 16: $\tau^1,\tau^2$ should be $\theta^1,\theta^2$
+ 
+  
+Line -8: (I think) $S_0\varphi^{\chi^s}$ should be $S_0\varphi^{\chi}$
+  
+\vv
+ \noindent\textbf{Page 12}
+ 
+Line 1, 2: $\sigma(\chi^s)$ should be $\sigma(\xi)$; Line 3: $\chi^s$ should be $\xi$ 
+
+The proof of Lemma 2.14: recall the normalization of $|\cdot|$, i.e. the value of $|p|$.
+
+\vv
+ \noindent\textbf{Page 13}
+ 
+Line 2, Line 9, Line 21: $\GL_2$ should be $\GL_n$ 
+ 
+  
+\vv 
+  \noindent\textbf{Page 15}
+
+Line 4: the citation should be [GHS, Lemma 9.2.4].
+
+Line 10: for $\Lambda_W$, maybe you mean $X(\mathbf{G}_{0}^{\rm der})$ ?
+
+\vv
+
+ \noindent\textbf{Page 21}
+ 
+ Line -7:  what is $\omega_J'$ here ?
+ 
+
+ \vv
+ \noindent\textbf{Page 26}
+ 
+ Line 12: if and only ``if''  
+
+\vv
+
+ \noindent\textbf{Page 29}
+ 
+Line -4: $f_j(\tau)$ should be $f_j(J)$
+ 
+ 
+\vv
+
+ \noindent\textbf{Page 32}
+ 
+Prop. 4.4: Give a reference for this result. 
+
+After Prop. 4.4: Could you give an example about the possible cycles, say for $f=2$ or $3$ ?
+  
+
+\vv
+ \noindent\textbf{Page 33}
+ 
+Line 15: Let $\overline{\rho}...$ ``be''  
+\vv
+
+%%%%%%
+ \noindent\textbf{Page 34}
+
+Line 3:  the tensor product should be taken over  $R_{\infty}(\tau,\lambda)$ 
+
+Line 8: should $K$ be $\GL_2(\cO_L)$? In \S1.1, you defined $K$ to be $\GL_2(\cO_L)$; however, $K$ also denotes the field $L(\pi)$ (\S3.1). Maybe that is why $\GL_2(\cO_L)$ is used in most cases. So, either you make clear this possible confusion of notation, or you use throughout $\GL_2(\cO_L)$. 
+
+\vv
+ \noindent\textbf{Page 35}
+
+Lemma 4.9: $i(\chi^s)$ is only used in the proof of Lemma 2.10; you should write $i(\chi^s,R\chi^s)$ instead of $i(\chi^s)$.
+
+Lemma 4.10: It is not clear what the morphism $M_{\infty}(\theta(\chi^s))\ra M_{\infty}(\theta(\chi))$ (until reading the proof), because $\Pi$ is an endomorphism of $M_{\infty}$ but not on $\theta(\chi^s)$ or $\theta(\chi)$. So I suggest first explain the construction of this morphism, using $\Pi$ and Frobenius reciprocity, then state and prove Lemma 4.10.
+
+The proof of Lemma 4.10: in the displayed formula, $\GL_2(k_L)$ should be $\GL_2(\cO_L)$ ($2$ times), because $M_{\infty}^{\vee}$ is not a representation of $\GL_2(k_L)$.
+
+\vv
+ \noindent\textbf{Page 36}
+ 
+Line -9: it should be $(M_{\infty}[\mathfrak{m}])^{K_1}\cong D_0(\overline{\rho})$
+
+\vv
+ \noindent\textbf{Page 37}
+ 
+The line above the last displayed formula: $\sigma(\chi^s)^{\chi}$ should be $\theta(\chi^s)^{\chi}$ 
+
+\vv
+
+ \noindent\textbf{Page 38}
+ 
+Prop. 4.14: I think you need take $Q(\chi^s)^{R\chi^s}$ to be a quotient of $\theta(\chi^s)^{R\chi^s}/\varpi_E$, i.e. $k_E$-representation ?   (otherwise I don't understand the quotient maps of Line -3).
+
+\vv
+ \noindent\textbf{Page 39}
+ 
+ Line -3: $\tau(\chi^s)$ should be $\theta(\chi^s)$; the same remark for Page 40, Line 4.
+
+\vv
+ \noindent\textbf{Page 41}
+ 
+The line above the big diagram: $\chi_0,..., \chi_{k-1}$ (miss one comma)
+
+Line -8: in the sequence of morphisms, $\theta^{R\chi_i}$ should be $\theta^{R\chi_i^s}$.
+
+\vv
+ \noindent\textbf{Page 42}
+
+Lemma 5.2: since $\overline{\rho}$ can be reducible non-split (until Lemma 5.5), you need to take $J_1\subset J_{\overline{\rho}}$.
+
+\vv
+\noindent\textbf{Page 43}
+
+Line -1,,-3: in the formulae, $\tau$ should be $\tau(\chi)$; also $\overline{\mathfrak{M}}^{\tau}(\chi)$ should be $\overline{\mathfrak{M}}^{\tau(\chi)}$
+
+ 
+\vv
+
+\noindent\textbf{Page 44}
+
+In the middle, you label the assumptions as (i), (ii), (iii); but in the proof of Lemma 5.6, (iii) is cited as (3). 
+
+\vv
+\noindent\textbf{Page 46}
+
+Line 5: forgot to precise which $\S$
+
+In the statement of Lemma 5.11, replace $W(k_L)\backslash 0$ by $W(k_L)\backslash\{0\}$
+
+ \vv   
+ \noindent\textbf{Page 47}
+ 
+In Proposition 5.14, it is better to cite (32), rather than (23,24).
+    \vv
+ 
+ \noindent\textbf{Page 48}
+
+Line 16: in the displayed formula, $\psi_k$ should be $\psi_{k-1}$ (even you identify $\psi_0$ with $\psi_k$)
+
+Section 5.3: In the formula  of $\overline{\rho}$, $\omega_f$ should be $\omega_{2f}$   
+
+\vv
+ \noindent\textbf{Page 49}
+ 
+ 
+Prop. 5.19: $i(\chi_i)^+$ should be $i^+(\chi_i)$ 
+
+Remark 5.20: the citation from [Hu16] should be Lemme 5.4(ii)
+
+Lemma 5.21: it is better to recall what $\mu(t)$ is for $t\in[1,p-2]$.
+    
+\vv
+ \noindent\textbf{Page 50}
+
+Line 12-13: the sentence is broken to two lines.
+
+Line -6: $e(\mu_i)$ should be $e(\mu)_i$ 
+
+\vv
+ \noindent\textbf{Page 51}
+ 
+Lemma 5.22: I suggest to write $\mu\lambda$   as $\mu\circ\lambda$, to be compatible with [BP12].
+
+Line -7 (typo): \textbf{P}roposition;   delete ``is''
+
+\vv 
+ \noindent\textbf{Page 52}
+ 
+Line 4, 8: replace $1\leq t\leq k$ by $0\leq t\leq k-1$ 
+   
+\vv
+
+ \noindent\textbf{Page 53}
+ 
+Line 11: $=$ should be $\neq$     
+
+\vv
+ \noindent\textbf{Page 55}
+ 
+ In (56), maybe you don't want to put $\prod_{j=0}^{f-1}$ ? 
+ 
+\vv
+ \noindent\textbf{Page 56}
+ 
+ Line 11-12: you cite the proof of [Bre11. Proposition 5.1], but I think it is better to also mention [BP12, Lemma 15.2].
+ 
+Line -4: I think you want to cite equation (52) (not Proposition)   
+ 
+\vv
+ \noindent\textbf{Page 57}
+ 
+ Line 7 (typo): ``an'' should be ``and''
+ 
+\vv
+ \noindent\textbf{Page 59}
+ 
+The end of proof of Thm. 5.36: exchange the order of reducible and irreducible case, to be compatible. Last line: replace $\mu_1-\mu_2$ by $\mu_{1,i}-\mu_{2,i}$. 
+ 
+Section 6.1, first sentence: ``Llet" should be ``Let'' 
+ 
+  
+\vv \noindent\textbf{Page 66}
+
+Line 1: ``serre'' should be ``Serre''  
+ 
+ \end{document} 

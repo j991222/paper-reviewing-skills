@@ -196,6 +196,29 @@ Compile the commented manuscript:
 {skill_dir}/scripts/compile_latex.sh "{local_dir}/manuscript_with_comments.tex" "{local_dir}"
 ```
 
+## Post-Compile Commented Manuscript Check
+
+After both `{local_dir}/final_report.pdf` and `{local_dir}/manuscript_with_comments.pdf` have been generated, inspect `{local_dir}/manuscript_with_comments.tex` before returning the artifacts.
+
+The TeX file passes only if it satisfies `SKILL.md` and follows the structure and style of `references/commented-manuscript-template.tex`: a normal paper-style preamble, section commands, theorem/proof/list/math environments, original manuscript content, and blue inline reviewer comments near the relevant text.
+
+Reject and rewrite `{local_dir}/manuscript_with_comments.tex` if any of the following remain:
+
+- line-by-line Markdown renderings
+- `\mline` wrappers
+- verbatim or `\texttt` source dumps of the manuscript
+- escaped Markdown headings such as `\#`, raw Markdown headings such as `#` or `### Page N` as the main structure
+- escaped Markdown emphasis such as `\*...\*`
+- escaped inline math that should be real LaTeX math
+
+If the file fails this check, rewrite it from `{local_dir}/manuscript_with_comments.md` using `references/commented-manuscript-template.tex` as the structure, reinsert all comments in blue, and recompile:
+
+```bash
+{skill_dir}/scripts/compile_latex.sh "{local_dir}/manuscript_with_comments.tex" "{local_dir}"
+```
+
+Do not return `manuscript_with_comments.pdf` until this inspection passes or until you clearly report the remaining blocker.
+
 Return both PDFs to the user:
 
 - `{local_dir}/final_report.pdf`

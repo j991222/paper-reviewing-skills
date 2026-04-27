@@ -152,5 +152,6 @@ Every issue in `verification.md` is also inserted into the commented manuscript 
 - format `manuscript_with_comments.tex` like a normal math paper: sections use `\section`/`\subsection`, theorem-like statements use `amsthm` environments, proofs use `proof`, lists use LaTeX list environments, and formulas remain real LaTeX math
 - do not leave visible Markdown artifacts such as `#`, `**`, escaped dollar signs, or OCR page headings as the main paper structure
 - render reviewer comments in blue in the TeX/PDF output
+- after both PDFs are generated, inspect `manuscript_with_comments.tex`; if it still contains line-by-line Markdown renderings, `\mline` wrappers, source dumps, or escaped Markdown/math artifacts, rewrite it using `references/commented-manuscript-template.tex` and recompile `manuscript_with_comments.pdf`
 
 The compiled output is `local_dir/manuscript_with_comments.pdf`.

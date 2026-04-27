@@ -99,7 +99,11 @@ For PDF input, the run must also write:
    - render review comments in blue, using `xcolor` or the base `color` package and a clear comment style such as `\textcolor{blue}{...}` or a blue boxed/quoted reviewer-comment block
    - do not overwrite the original manuscript source
 10. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
-11. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` if compilation succeeds.
+11. After both PDFs have been generated, inspect `manuscript_with_comments.tex` before returning anything.
+   - verify that it satisfies the criteria in this `SKILL.md` and follows the style of `references/commented-manuscript-template.tex`
+   - reject it if it still contains line-by-line Markdown renderings, `\mline` wrappers, verbatim/texttt source dumps, escaped Markdown headings such as `\#`, raw `#` headings, or escaped inline math that should be real LaTeX math
+   - if it fails this inspection, rewrite `manuscript_with_comments.tex` using `references/commented-manuscript-template.tex` as the structure, convert the manuscript into normal paper-style LaTeX, preserve all reviewer comments in blue, and recompile `manuscript_with_comments.pdf`
+12. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` only after the commented manuscript passes this inspection or after clearly reporting why it could not be corrected.
 
 ## Verification Standards
 

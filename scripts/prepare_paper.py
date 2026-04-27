@@ -24,6 +24,7 @@ STATEMENT_ENV_RE = re.compile(
 SECTION_RE = re.compile(r"\\(section|subsection|subsubsection)\*?\{([^}]*)\}")
 LABEL_RE = re.compile(r"\\label\{([^}]*)\}")
 MARKDOWN_HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
+SECTION_NUMBER_RE = re.compile(r"^\s*((?:\d+\.)*\d+)(?:[.)])?\s*(.*)$")
 TEXT_STATEMENT_RE = re.compile(
     r"^\s*(Theorem|Lemma|Proposition|Corollary|Claim|Definition|Conjecture|Remark|Example)"
     r"\b[ .:\-\w()]*",
@@ -92,6 +93,8 @@ def chunk_tex(lines: list[str]) -> list[dict[str, Any]]:
                 "section": current_section,
                 "start_line": start,
                 "end_line": end,
+                "location_style": "line",
+                "location": f"Line {start}" if start == end else f"Lines {start}--{end}",
                 "text": block_text,
             }
         )
@@ -99,7 +102,68 @@ def chunk_tex(lines: list[str]) -> list[dict[str, Any]]:
     return chunks
 
 
-def chunk_markdown_or_text(lines: list[str]) -> list[dict[str, Any]]:
+def markdown_section_info(level: int, raw_title: str) -> dict[str, Any]:
+    title = re.sub(r"\s+", " ", raw_title.strip()).strip()
+    match = SECTION_NUMBER_RE.match(title)
+    section_id = match.group(1) if match else ""
+    section_name = match.group(2).strip() if match else title
+    display_name = section_name or title
+    kind = "Section" if level <= 1 else "Subsection"
+
+    if section_id and display_name:
+        location = f"{kind} {section_id} ({display_name})"
+    elif section_id:
+        location = f"{kind} {section_id}"
+    elif display_name:
+        location = f"{kind} {display_name}"
+    else:
+        location = "Unlabeled section"
+
+    return {
+        "section": display_name,
+        "section_id": section_id,
+        "section_level": level,
+        "location": location,
+    }
+
+
+def markdown_section_map(lines: list[str]) -> list[dict[str, Any]]:
+    current = {
+        "section": "",
+        "section_id": "",
+        "section_level": 0,
+        "location": "Unlabeled section",
+    }
+    sections: list[dict[str, Any]] = []
+    for line in lines:
+        heading = MARKDOWN_HEADING_RE.match(line)
+        if heading:
+            current = markdown_section_info(len(heading.group(1)), heading.group(2))
+        sections.append(dict(current))
+    return sections
+
+
+def location_fields(
+    *,
+    location_style: str,
+    start_line: int,
+    end_line: int,
+    sections: list[dict[str, Any]],
+) -> dict[str, Any]:
+    if location_style == "section":
+        section = sections[start_line - 1] if sections else {}
+        return {
+            "location_style": "section",
+            "location": section.get("location", "Unlabeled section"),
+            "section": section.get("section", ""),
+            "section_id": section.get("section_id", ""),
+            "section_level": section.get("section_level", 0),
+        }
+    location = f"Line {start_line}" if start_line == end_line else f"Lines {start_line}--{end_line}"
+    return {"location_style": "line", "location": location}
+
+
+def chunk_markdown_or_text(lines: list[str], *, location_style: str = "line") -> list[dict[str, Any]]:
     starts: list[int] = []
     for index, line in enumerate(lines):
         heading = MARKDOWN_HEADING_RE.match(line)
@@ -110,29 +174,38 @@ def chunk_markdown_or_text(lines: list[str]) -> list[dict[str, Any]]:
             starts.append(index)
 
     chunks: list[dict[str, Any]] = []
+    sections = markdown_section_map(lines) if location_style == "section" else []
     for pos, start_index in enumerate(starts):
         end_index = starts[pos + 1] - 1 if pos + 1 < len(starts) else len(lines) - 1
         text = "\n".join(lines[start_index : end_index + 1]).strip()
         heading = text.splitlines()[0] if text else "statement"
+        start_line = start_index + 1
+        end_line = end_index + 1
         chunks.append(
             {
                 "chunk_id": f"chunk_{len(chunks) + 1:04d}",
                 "kind": "statement",
                 "label": "",
-                "section": "",
-                "start_line": start_index + 1,
-                "end_line": end_index + 1,
+                "start_line": start_line,
+                "end_line": end_line,
                 "text": text,
                 "heading": heading,
+                **location_fields(
+                    location_style=location_style,
+                    start_line=start_line,
+                    end_line=end_line,
+                    sections=sections,
+                ),
             }
         )
     return chunks
 
 
-def fallback_paragraph_chunks(lines: list[str]) -> list[dict[str, Any]]:
+def fallback_paragraph_chunks(lines: list[str], *, location_style: str = "line") -> list[dict[str, Any]]:
     chunks: list[dict[str, Any]] = []
     start: int | None = None
     buffer: list[str] = []
+    sections = markdown_section_map(lines) if location_style == "section" else []
     for index, line in enumerate(lines, start=1):
         if line.strip():
             if start is None:
@@ -145,10 +218,15 @@ def fallback_paragraph_chunks(lines: list[str]) -> list[dict[str, Any]]:
                     "chunk_id": f"chunk_{len(chunks) + 1:04d}",
                     "kind": "paragraph",
                     "label": "",
-                    "section": "",
                     "start_line": start,
                     "end_line": index - 1,
                     "text": "\n".join(buffer),
+                    **location_fields(
+                        location_style=location_style,
+                        start_line=start,
+                        end_line=index - 1,
+                        sections=sections,
+                    ),
                 }
             )
         start = None
@@ -159,10 +237,15 @@ def fallback_paragraph_chunks(lines: list[str]) -> list[dict[str, Any]]:
                 "chunk_id": f"chunk_{len(chunks) + 1:04d}",
                 "kind": "paragraph",
                 "label": "",
-                "section": "",
                 "start_line": start,
                 "end_line": len(lines),
                 "text": "\n".join(buffer),
+                **location_fields(
+                    location_style=location_style,
+                    start_line=start,
+                    end_line=len(lines),
+                    sections=sections,
+                ),
             }
         )
     return chunks
@@ -189,6 +272,7 @@ def extract_pdf(
     markdown_path = output_dir / "paper_ocr.md"
     mineru_dir = output_dir / "mineru_ocr"
     mineru_script = Path(__file__).resolve().with_name("mineru_pdf_to_markdown.py")
+    markdown_path.unlink(missing_ok=True)
 
     cmd = [
         sys.executable,
@@ -214,10 +298,17 @@ def extract_pdf(
     code, output = run_command(cmd)
     notes.append("Ran MinerU OCR-to-Markdown.")
     notes.append(output.strip())
-    if code == 0 and markdown_path.exists():
+    if markdown_path.is_file() and markdown_path.stat().st_size > 0:
+        if code != 0:
+            notes.append(
+                "MinerU helper returned a nonzero exit code but produced paper_ocr.md; "
+                "using the Markdown output and skipping embedded PDF text fallback."
+            )
         return read_text_file(markdown_path), notes
 
-    notes.append(f"MinerU OCR failed with exit code {code}.")
+    notes.append(
+        f"MinerU OCR failed with exit code {code} and did not produce a non-empty paper_ocr.md."
+    )
     if not allow_text_fallback:
         raise RuntimeError(
             "MinerU OCR-to-Markdown failed. Set MINERU_API_TOKEN, pass --mineru-token-file, "
@@ -293,6 +384,7 @@ def main() -> int:
     input_path = Path(args.input).resolve()
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+    location_style = "section" if input_path.suffix.lower() == ".pdf" else "line"
 
     try:
         text, input_kind, notes = load_input(
@@ -322,9 +414,9 @@ def main() -> int:
     if input_kind == "tex":
         chunks = chunk_tex(lines)
     else:
-        chunks = chunk_markdown_or_text(lines)
+        chunks = chunk_markdown_or_text(lines, location_style=location_style)
     if not chunks:
-        chunks = fallback_paragraph_chunks(lines)
+        chunks = fallback_paragraph_chunks(lines, location_style=location_style)
     write_chunks(chunks, chunks_path)
 
     notes_path.write_text(
@@ -335,6 +427,7 @@ def main() -> int:
         "input_path": str(input_path),
         "input_kind": input_kind,
         "sha256": hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest(),
+        "location_style": location_style,
         "line_count": len(lines),
         "chunk_count": len(chunks),
         "paper_source": str(source_path),

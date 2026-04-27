@@ -19,8 +19,8 @@ For each cited result, read:
 ## Procedure
 
 1. Identify the exact current-paper claim supported by the citation.
-2. Search for the cited result using available browser/search tools.
-3. When useful, query the arXiv theorem-search helper:
+2. Use web search and available browser/search tools to find reliable sources for the cited result. Prefer primary sources such as the cited paper, arXiv source, publisher page, author manuscript, or official theorem statement.
+3. When useful, also query the arXiv theorem-search helper:
 
 ```bash
 python3 {skill_dir}/scripts/search_arxiv_theorems.py --query "full referenced statement" --num-results 10

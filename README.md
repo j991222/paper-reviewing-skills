@@ -9,7 +9,7 @@ It accepts papers in:
 - plain text
 - PDF, with OCR required by default
 
-The skill verifies the paper chunk by chunk, writes an incremental `verification.md`, synthesizes a referee-style `final_report.tex`, compiles it, and returns a PDF report when LaTeX is available.
+The skill verifies the paper chunk by chunk, writes an incremental `verification.md`, synthesizes a referee-style `final_report.tex`, adds comments to a manuscript copy, compiles both, and returns the report PDF plus `manuscript_with_comments.pdf` when LaTeX is available.
 
 ## Package Layout
 
@@ -27,6 +27,7 @@ paper-reviewing-skills/
 │   └── paper-review-workflow.md
 └── scripts/
     ├── compile_latex.sh
+    ├── build_commented_manuscript.py
     ├── mineru_pdf_to_markdown.py
     ├── prepare_paper.py
     └── search_arxiv_theorems.py
@@ -79,8 +80,11 @@ local_dir/paper_source.txt
 local_dir/paper_numbered.txt
 local_dir/paper_chunks.jsonl
 local_dir/verification.md
+local_dir/review_comments.jsonl
 local_dir/final_report.tex
 local_dir/final_report.pdf
+local_dir/manuscript_with_comments.tex
+local_dir/manuscript_with_comments.pdf
 ```
 
 PDF runs also write:
@@ -88,9 +92,10 @@ PDF runs also write:
 ```text
 local_dir/paper_ocr.md
 local_dir/mineru_ocr/
+local_dir/manuscript_with_comments.md
 ```
 
-If PDF compilation fails, `final_report.tex` is still preserved.
+If PDF compilation fails, the corresponding `.tex` file is still preserved.
 
 ## PDF Requirements
 
@@ -100,6 +105,7 @@ PDF input uses MinerU OCR to produce Markdown first:
 - set `MINERU_API_TOKEN`, or pass `--mineru-token-file`
 - output Markdown is written to `local_dir/paper_ocr.md`
 - MinerU zip/extract artifacts are written under `local_dir/mineru_ocr/`
+- later preparation and review steps use non-empty `local_dir/paper_ocr.md`, not embedded PDF text
 
 Run preparation with:
 
@@ -109,7 +115,7 @@ MINERU_API_TOKEN="..." python3 scripts/prepare_paper.py \
   --output-dir /path/to/review-output
 ```
 
-The token should not be committed into the skill directory. The preparation script can use embedded PDF text only when explicitly allowed:
+The token should not be committed into the skill directory. The preparation script can use embedded PDF text only when MinerU fails to produce a non-empty `paper_ocr.md` and fallback is explicitly allowed:
 
 ```bash
 python3 scripts/prepare_paper.py \
@@ -123,8 +129,18 @@ python3 scripts/prepare_paper.py \
 The final report follows [references/example_report.tex](references/example_report.tex):
 
 - starts with a summary of the paper and its main proof strategy
-- lists findings in increasing line-number order
-- starts each finding with a line number
+- lists findings in source order
+- starts each TeX/Markdown finding with a line number
+- starts each PDF finding with the relevant section/subsection id or name
 - does not use page numbers
 - includes every error, gap, or typo from `verification.md`
 - uses TeX labels from the source and does not invent theorem ids
+
+## Commented Manuscript
+
+Every issue in `verification.md` is also written to `review_comments.jsonl`. The helper `scripts/build_commented_manuscript.py` uses that JSONL file to produce:
+
+- for TeX input: a commented copy of the original LaTeX source
+- for PDF input: comments inserted into `paper_ocr.md`, then converted to LaTeX
+
+The compiled output is `local_dir/manuscript_with_comments.pdf`.

@@ -19,13 +19,13 @@ The body should have:
 \noindent Here is a list of remarks/comments.\bigskip
 ```
 
-4. Findings in increasing line-number order. Use line numbers from `paper_numbered.txt`.
+4. Findings in source order. For TeX or Markdown input, use line numbers from `paper_numbered.txt`. For PDF input, use the nearest section/subsection id or name from `paper_ocr.md`.
 
 ## Finding Style
 
 Do not separate findings into separate sections for errors, gaps, and typos. Present them in one ordered list. Do not include page numbers.
 
-Each finding should start with the line number and then the content:
+For TeX or Markdown input, each finding should start with the line number and then the content:
 
 ```tex
 \vv
@@ -41,6 +41,15 @@ For line ranges, write:
 
 If a theorem, lemma, proposition, or equation has a TeX label, use that label. Do not invent theorem ids.
 
+For PDF input, do not use line numbers as the primary location. Each finding should start with the section/subsection id or name and then the content:
+
+```tex
+\vv
+\noindent Section 2.1 (Main construction): The proof of the main estimate applies Lemma 2.3 without checking the boundedness hypothesis. Suggested fix: add the missing boundedness assumption or replace the appeal to Lemma 2.3 with ...
+```
+
+If the OCR Markdown has no recognizable section heading near the issue, use the closest available heading or a concise local section name, for example `Unlabeled subsection after Theorem 3.2:`.
+
 ## Required Content For Issues
 
 Every issue transferred from `verification.md` should include, in prose:
@@ -51,7 +60,9 @@ Every issue transferred from `verification.md` should include, in prose:
 - suggested fix
 - counterexample analysis when the claim appears false
 
-Typos can be shorter, but still state the exact line and correction.
+Typos can be shorter, but still state the exact location and correction.
+
+For PDF input, typos should still cite the section/subsection id or name instead of a line number.
 
 ## No-Issue Case
 

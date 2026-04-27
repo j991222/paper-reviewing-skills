@@ -1,4 +1,4 @@
 interface:
   display_name: "Paper Reviewing Skills"
-  short_description: "Statement-level math paper review"
-  default_prompt: "Use $paper_reviewing_skills to review this mathematics paper and produce a verification report."
+  short_description: "Math paper review with commented manuscript"
+  default_prompt: "Use $paper_reviewing_skills to review this mathematics paper, produce a verification report PDF, and produce manuscript_with_comments.pdf."

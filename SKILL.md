@@ -26,7 +26,6 @@ Resolve paths relative to this skill directory.
 - Paper preparation helper: `scripts/prepare_paper.py`
 - MinerU PDF OCR-to-Markdown helper: `scripts/mineru_pdf_to_markdown.py`
 - arXiv theorem-search API helper: `scripts/search_arxiv_theorems.py`
-- Commented manuscript builder: `scripts/build_commented_manuscript.py`
 - LaTeX compiler helper: `scripts/compile_latex.sh`
 - Review workflow: `references/paper-review-workflow.md`
 - Final report style guide: `references/final-report-style.md`
@@ -35,6 +34,14 @@ Resolve paths relative to this skill directory.
 - Bundled verification subskills: `agent_resources/verification/.agents/skills/`
 
 ## Runtime Notes
+
+Before doing anything else for this skill, initialize the shell environment by running:
+
+```bash
+source /root/root/bashrc
+```
+
+If the runtime launches a fresh shell for each command, make sure commands that depend on that environment are run from a shell where `/root/root/bashrc` has been sourced.
 
 This is a skill, not a plugin. Do not require custom MCP tools. Use local files, the bundled scripts, and the browser/search tools exposed by the active runtime.
 
@@ -50,37 +57,43 @@ Every review run must write:
 - `paper_numbered.txt`: extracted text with stable line numbers
 - `paper_chunks.jsonl`: heuristic statement-level chunks with `location_style` metadata
 - `verification.md`: incrementally updated detailed verification report
-- `review_comments.jsonl`: machine-readable comments matching the issues in `verification.md`
 - `final_report.tex`: final user-facing report
 - `final_report.pdf`: compiled report, when LaTeX tooling is available
+- `manuscript_with_comments.md`: manuscript content with inline review comments
 - `manuscript_with_comments.tex`: manuscript source with review comments inserted
 - `manuscript_with_comments.pdf`: compiled commented manuscript, when LaTeX tooling is available
 
 For PDF input, the run must also write:
 
 - `paper_ocr.md`: MinerU OCR Markdown
-- `manuscript_with_comments.md`: OCR Markdown with review comments inserted
 
 ## Workflow
 
-1. Create the local output directory.
-2. Prepare the paper:
+1. Source `/root/root/bashrc` before any other action.
+2. Create the local output directory.
+3. Prepare the paper:
    - for TeX or Markdown, preserve source line numbers
    - for PDF, run MinerU OCR-to-Markdown through `scripts/prepare_paper.py` and use section/subsection locations from the OCR Markdown
-3. Read `references/paper-review-workflow.md`.
-4. Review the paper statement by statement:
+4. Read `references/paper-review-workflow.md`.
+5. Review the paper statement by statement:
    - split into theorem, lemma, proposition, corollary, definition, claim, remark, proof, and paragraph-level chunks as needed
    - check every statement in order
    - if a statement has no proof nearby, search its surrounding context for the proof
    - verify each proof beyond surface issues; look for critical mathematical errors
    - for wrong claims, try to construct counterexamples or explain plausible counterexample mechanisms
-5. Incrementally write and update `verification.md` and `review_comments.jsonl` after each chunk.
-6. Synthesize `final_report.tex` using `references/final-report-style.md`, `references/example_report.tex`, and `references/final-report-template.tex`.
-7. Build `manuscript_with_comments.tex` with `scripts/build_commented_manuscript.py`.
-   - for PDF input, use `{local_dir}/paper_ocr.md` as the source and also write `{local_dir}/manuscript_with_comments.md`
-   - for TeX input, use the original TeX file as the source and write a commented TeX copy; do not overwrite the original file
-8. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
-9. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` if compilation succeeds.
+6. Incrementally write and update `verification.md` after each chunk.
+7. Synthesize `final_report.tex` using `references/final-report-style.md`, `references/example_report.tex`, and `references/final-report-template.tex`.
+8. Author `manuscript_with_comments.md`.
+   - include the manuscript's original content together with every comment from `verification.md`
+   - for PDF input, start from `{local_dir}/paper_ocr.md`
+   - for TeX or Markdown input, start from the original source content
+   - insert each reviewer comment immediately after the affected statement, proof step, paragraph, or displayed formula
+9. Author `manuscript_with_comments.tex` from `manuscript_with_comments.md`.
+   - preserve the manuscript's original mathematical content as faithfully as possible
+   - render review comments in blue, using `xcolor` and a clear comment style such as `\textcolor{blue}{...}` or a blue boxed/quoted reviewer-comment block
+   - do not overwrite the original manuscript source
+10. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
+11. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` if compilation succeeds.
 
 ## Verification Standards
 
@@ -96,14 +109,7 @@ The review must include every checked statement. For every error, gap, or typo, 
 
 Do not stop after finding a minor gap or typo. Continue checking for deeper mathematical errors in the same proof.
 
-Every error, gap, typo, or substantive remark in `verification.md` must also be written to `review_comments.jsonl`. Use one JSON object per line with:
-
-- `location_style`: `line` for TeX/Markdown input, `section` for PDF input
-- `location`: the same user-facing location used in the report
-- `start_line`, `end_line`, or `insert_after_line`: internal placement line in the source used for insertion
-- `type`: `error`, `gap`, `typo`, or `comment`
-- `description`, `analysis`, `suggested_fix`, and optional `counterexample_analysis`
-- `comment`: concise text to insert into the commented manuscript
+Every error, gap, typo, or substantive remark in `verification.md` must also appear as an inline reviewer comment in `manuscript_with_comments.md` and `manuscript_with_comments.tex`.
 
 ## Final Report Requirements
 
@@ -120,4 +126,4 @@ The final report must:
 
 If no errors, gaps, or typos are found, say so explicitly after the summary and state the scope of the review.
 
-If there are no comments, still produce `review_comments.jsonl` as an empty file and compile a `manuscript_with_comments.pdf` that matches the reviewed source.
+If there are no comments, still produce `manuscript_with_comments.md`, `manuscript_with_comments.tex`, and `manuscript_with_comments.pdf` matching the reviewed source and note that no comments were inserted.

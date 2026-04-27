@@ -27,7 +27,6 @@ paper-reviewing-skills/
 │   └── paper-review-workflow.md
 └── scripts/
     ├── compile_latex.sh
-    ├── build_commented_manuscript.py
     ├── mineru_pdf_to_markdown.py
     ├── prepare_paper.py
     └── search_arxiv_theorems.py
@@ -59,6 +58,12 @@ openclaw skills list
 
 ## Usage
 
+The skill first initializes its shell environment with:
+
+```bash
+source /root/root/bashrc
+```
+
 ```text
 Use $paper_reviewing_skills to review /path/to/paper.tex.
 Write outputs to /path/to/review-output.
@@ -80,9 +85,9 @@ local_dir/paper_source.txt
 local_dir/paper_numbered.txt
 local_dir/paper_chunks.jsonl
 local_dir/verification.md
-local_dir/review_comments.jsonl
 local_dir/final_report.tex
 local_dir/final_report.pdf
+local_dir/manuscript_with_comments.md
 local_dir/manuscript_with_comments.tex
 local_dir/manuscript_with_comments.pdf
 ```
@@ -92,7 +97,6 @@ PDF runs also write:
 ```text
 local_dir/paper_ocr.md
 local_dir/mineru_ocr/
-local_dir/manuscript_with_comments.md
 ```
 
 If PDF compilation fails, the corresponding `.tex` file is still preserved.
@@ -106,6 +110,7 @@ PDF input uses MinerU OCR to produce Markdown first:
 - output Markdown is written to `local_dir/paper_ocr.md`
 - MinerU zip/extract artifacts are written under `local_dir/mineru_ocr/`
 - later preparation and review steps use non-empty `local_dir/paper_ocr.md`, not embedded PDF text
+- `paper_source.txt` is the normalized working copy; for successful PDF OCR it is written from `paper_ocr.md`
 
 Run preparation with:
 
@@ -138,9 +143,10 @@ The final report follows [references/example_report.tex](references/example_repo
 
 ## Commented Manuscript
 
-Every issue in `verification.md` is also written to `review_comments.jsonl`. The helper `scripts/build_commented_manuscript.py` uses that JSONL file to produce:
+Every issue in `verification.md` is also inserted into the commented manuscript artifacts:
 
-- for TeX input: a commented copy of the original LaTeX source
-- for PDF input: comments inserted into `paper_ocr.md`, then converted to LaTeX
+- first write `local_dir/manuscript_with_comments.md` with the original manuscript content and inline reviewer comments
+- then write `local_dir/manuscript_with_comments.tex` based on that Markdown
+- render reviewer comments in blue in the TeX/PDF output
 
 The compiled output is `local_dir/manuscript_with_comments.pdf`.

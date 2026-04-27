@@ -14,6 +14,14 @@ The master agent provides:
 
 ## Preparation
 
+Before any other action, initialize the shell environment:
+
+```bash
+source /root/root/bashrc
+```
+
+If the runtime launches a fresh shell for each command, make sure commands that depend on that environment are run from a shell where `/root/root/bashrc` has been sourced.
+
 If the paper is a file, run:
 
 ```bash
@@ -66,8 +74,6 @@ Do not stop at the first gap or typo. Continue looking for deeper mathematical e
 
 Maintain `{local_dir}/verification.md` throughout the review. Append or update after every checked chunk.
 
-Maintain `{local_dir}/review_comments.jsonl` at the same time. Every issue or substantive comment that appears in `verification.md` must have one JSONL object for insertion into the commented manuscript. If there are no issues, create an empty file.
-
 Use this structure:
 
 ```markdown
@@ -100,15 +106,7 @@ For PDF input, replace the heading with:
 ### Section/Subsection <id or name>: <label or local description>
 ```
 
-Every statement must appear in `verification.md`, even if no issue is found.
-
-Use this JSONL schema for `review_comments.jsonl`:
-
-```json
-{"location_style":"line","location":"Lines 215--223","start_line":215,"end_line":223,"type":"gap","description":"...","analysis":"...","suggested_fix":"...","counterexample_analysis":"...","comment":"Concise manuscript comment text."}
-```
-
-For PDF input, use `location_style: "section"` and the section/subsection id or name as `location`. Still include `start_line`, `end_line`, or `insert_after_line` from the OCR Markdown when available so the insertion helper can place the comment near the relevant text. These line fields are internal placement metadata and should not be the primary location shown in the final report.
+Every statement must appear in `verification.md`, even if no issue is found. Every issue or substantive comment in `verification.md` must later be inserted into `manuscript_with_comments.md` and `manuscript_with_comments.tex`.
 
 ## External References
 
@@ -152,31 +150,37 @@ If compilation fails, preserve `final_report.tex`, record the compiler error, an
 
 ## Commented Manuscript
 
-After `verification.md`, `review_comments.jsonl`, and `final_report.tex` are complete, build the commented manuscript.
+After `verification.md` and `final_report.tex` are complete, author the commented manuscript directly. Do not use a script to construct this artifact.
 
-For TeX input:
+First write `{local_dir}/manuscript_with_comments.md`:
 
-```bash
-python3 {skill_dir}/scripts/build_commented_manuscript.py \
-  --source "{paper_path}" \
-  --source-format tex \
-  --comments "{local_dir}/review_comments.jsonl" \
-  --output-dir "{local_dir}" \
-  --compile-script "{skill_dir}/scripts/compile_latex.sh"
+- include the manuscript's original content, not merely a list of comments
+- for PDF input, use `{local_dir}/paper_ocr.md` as the starting manuscript
+- for TeX or Markdown input, use the original source content as the starting manuscript
+- insert each reviewer comment from `verification.md` immediately after the affected statement, proof step, paragraph, or displayed formula
+- write comments in a visually distinct Markdown form, for example a blockquote beginning with `**Reviewer comment.**`
+- preserve mathematical notation, labels, theorem statements, and proof text as faithfully as possible
+
+Then write `{local_dir}/manuscript_with_comments.tex` based on `{local_dir}/manuscript_with_comments.md`:
+
+- include the manuscript's original content together with the inline comments
+- use `\usepackage{xcolor}`
+- render reviewer comments in blue, for example:
+
+```tex
+\begin{quote}
+\color{blue}\textbf{Reviewer comment.} Explain the missing implication here and add the needed hypothesis.
+\end{quote}
 ```
 
-For PDF input:
+- keep comments near the relevant manuscript text, not collected at the end
+- do not overwrite the original manuscript source
+
+Compile the commented manuscript:
 
 ```bash
-python3 {skill_dir}/scripts/build_commented_manuscript.py \
-  --source "{local_dir}/paper_ocr.md" \
-  --source-format markdown \
-  --comments "{local_dir}/review_comments.jsonl" \
-  --output-dir "{local_dir}" \
-  --compile-script "{skill_dir}/scripts/compile_latex.sh"
+{skill_dir}/scripts/compile_latex.sh "{local_dir}/manuscript_with_comments.tex" "{local_dir}"
 ```
-
-The helper writes `{local_dir}/manuscript_with_comments.tex` and compiles `{local_dir}/manuscript_with_comments.pdf`. For PDF input it also writes `{local_dir}/manuscript_with_comments.md`, which is the OCR Markdown with inserted review comments.
 
 Return both PDFs to the user:
 

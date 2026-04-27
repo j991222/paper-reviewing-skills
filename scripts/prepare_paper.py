@@ -273,6 +273,11 @@ def extract_pdf(
     mineru_dir = output_dir / "mineru_ocr"
     mineru_script = Path(__file__).resolve().with_name("mineru_pdf_to_markdown.py")
     markdown_path.unlink(missing_ok=True)
+    for stale_fallback in (
+        output_dir / "paper_pdf_text_fallback.txt",
+        output_dir / "paper_pdftotext.txt",
+    ):
+        stale_fallback.unlink(missing_ok=True)
 
     cmd = [
         sys.executable,
@@ -304,6 +309,7 @@ def extract_pdf(
                 "MinerU helper returned a nonzero exit code but produced paper_ocr.md; "
                 "using the Markdown output and skipping embedded PDF text fallback."
             )
+        notes.append("Using paper_ocr.md as the source for paper_source.txt and all later processing.")
         return read_text_file(markdown_path), notes
 
     notes.append(

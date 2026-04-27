@@ -163,11 +163,21 @@ First write `{local_dir}/manuscript_with_comments.md`:
 
 Then write `{local_dir}/manuscript_with_comments.tex` based on `{local_dir}/manuscript_with_comments.md`:
 
-- write real, valid LaTeX that can compile; do not paste raw Markdown into the `.tex` file
+- use `references/commented-manuscript-template.tex` as the starting structure unless the original TeX source already has a better paper preamble
+- write real, valid LaTeX that can compile and visually reads like a professional mathematics paper; do not paste raw Markdown into the `.tex` file
+- do not make a line-numbered transcript of Markdown. Avoid `\mline` commands, verbatim/texttt line dumps, or a source-code style rendering of the manuscript.
+- do not leave Markdown/OCR artifacts in the compiled paper. In particular, do not leave headings as escaped `\#`, emphasis as `\*...\*`, Markdown citations as raw markup when they can be expressed as prose or LaTeX, or inline math as escaped dollar signs.
 - include a complete LaTeX preamble and `\begin{document}` / `\end{document}`
-- convert Markdown headings, lists, blockquotes, displayed equations, and inline comments into valid LaTeX structures
+- use a paper-style class and packages such as `amsmath`, `amssymb`, `amsthm`, `mathtools` when useful, `xcolor` or the base `color` package, and `hyperref` when available
+- define theorem environments for theorem, lemma, proposition, corollary, definition, remark, question, conjecture, example, and claim as needed by the manuscript
+- convert Markdown/OCR headings into `\section`, `\subsection`, and `\subsubsection`
+- convert theorem-like blocks into theorem environments, preserving visible names and labels when present
+- convert proofs into `proof` environments
+- convert displayed formulas into display math, `equation`, `align`, or another suitable math environment; preserve inline math as real LaTeX math
+- convert lists into `itemize` or `enumerate`
+- omit OCR-only page headings such as `### Page N` from the paper body unless they are needed for navigation; if retained, make them unobtrusive comments or markers, not section headings
 - include the manuscript's original content together with the inline comments
-- use `\usepackage{xcolor}`
+- use `\usepackage{xcolor}` when available, or `\usepackage{color}` as a fallback
 - render reviewer comments in blue, for example:
 
 ```tex

@@ -1,0 +1,44 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{color}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{question}[theorem]{Question}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newenvironment{reviewcomment}
+  {\begin{quote}\color{blue}\textbf{Reviewer comment.}\ }
+  {\end{quote}}
+
+\title{Manuscript with Review Comments}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% Convert the reviewed manuscript into normal LaTeX below.
+% Use sections, theorem environments, proof environments, lists, and real math.
+% Insert reviewer comments with:
+%
+% \begin{reviewcomment}
+% Explain the issue and suggested fix.
+% \end{reviewcomment}
+
+\end{document}

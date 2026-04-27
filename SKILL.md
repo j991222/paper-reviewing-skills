@@ -28,6 +28,7 @@ Resolve paths relative to this skill directory.
 - arXiv theorem-search API helper: `scripts/search_arxiv_theorems.py`
 - LaTeX compiler helper: `scripts/compile_latex.sh`
 - Review workflow: `references/paper-review-workflow.md`
+- Commented manuscript TeX template: `references/commented-manuscript-template.tex`
 - Final report style guide: `references/final-report-style.md`
 - Example final report: `references/example_report.tex`
 - Final report TeX template: `references/final-report-template.tex`
@@ -89,10 +90,13 @@ For PDF input, the run must also write:
    - for TeX or Markdown input, start from the original source content
    - insert each reviewer comment immediately after the affected statement, proof step, paragraph, or displayed formula
 9. Author `manuscript_with_comments.tex` from `manuscript_with_comments.md`.
-   - write real, valid LaTeX that can compile; do not copy raw Markdown syntax into the `.tex` file
-   - include a complete preamble, document environment, required packages, and LaTeX section/list/display-math syntax
+   - use `references/commented-manuscript-template.tex` as the starting structure unless the original TeX source already has a better paper preamble
+   - write real, valid LaTeX that compiles and reads like a normal mathematics paper; do not copy raw Markdown syntax into the `.tex` file
+   - do not create line-by-line Markdown renderings, `\mline` wrappers, verbatim/texttt dumps, or escaped Markdown artifacts such as `\#`, `\*\*`, or escaped `$...$` in running text
+   - include a complete preamble, document environment, required packages, theorem environments, and LaTeX section/list/display-math syntax
+   - convert Markdown/OCR structure into professional LaTeX: headings become `\section`, `\subsection`, or `\subsubsection`; theorem, lemma, proposition, corollary, definition, remark, question, conjecture, and example blocks become `amsthm` environments; proofs become `proof` environments; lists become `itemize` or `enumerate`; display equations become LaTeX display math or equation environments
    - preserve the manuscript's original mathematical content as faithfully as possible
-   - render review comments in blue, using `xcolor` and a clear comment style such as `\textcolor{blue}{...}` or a blue boxed/quoted reviewer-comment block
+   - render review comments in blue, using `xcolor` or the base `color` package and a clear comment style such as `\textcolor{blue}{...}` or a blue boxed/quoted reviewer-comment block
    - do not overwrite the original manuscript source
 10. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
 11. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` if compilation succeeds.

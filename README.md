@@ -149,6 +149,7 @@ Every issue in `verification.md` is also inserted into the commented manuscript 
 - first write `local_dir/manuscript_with_comments.md` with the original manuscript content and inline reviewer comments
 - then write `local_dir/manuscript_with_comments.tex` as valid compilable LaTeX based on that Markdown, not as copied raw Markdown or a line-by-line source dump
 - use `references/commented-manuscript-template.tex` as a starting point unless the original TeX source already has a better paper preamble
+- preserve the original paper's full content; `manuscript_with_comments.tex` must not be a compressed reconstruction, summary, or shortened paraphrase of the manuscript
 - format `manuscript_with_comments.tex` like a normal math paper: sections use `\section`/`\subsection`, theorem-like statements use `amsthm` environments, proofs use `proof`, lists use LaTeX list environments, and formulas remain real LaTeX math
 - do not leave visible Markdown artifacts such as `#`, `**`, escaped dollar signs, or OCR page headings as the main paper structure
 - render reviewer comments in blue in the TeX/PDF output

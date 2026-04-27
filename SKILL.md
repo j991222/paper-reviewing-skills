@@ -92,6 +92,8 @@ For PDF input, the run must also write:
 9. Author `manuscript_with_comments.tex` from `manuscript_with_comments.md`.
    - use `references/commented-manuscript-template.tex` as the starting structure unless the original TeX source already has a better paper preamble
    - write real, valid LaTeX that compiles and reads like a normal mathematics paper; do not copy raw Markdown syntax into the `.tex` file
+   - be faithful to the original paper's content: preserve the full manuscript text, mathematical statements, proofs, formulas, labels, citations, definitions, and section order except for unavoidable OCR cleanup and LaTeX syntax repair
+   - do not produce a compressed reconstruction, summary, paraphrase-only rewrite, or shortened version of the manuscript
    - do not create line-by-line Markdown renderings, `\mline` wrappers, verbatim/texttt dumps, or escaped Markdown artifacts such as `\#`, `\*\*`, or escaped `$...$` in running text
    - include a complete preamble, document environment, required packages, theorem environments, and LaTeX section/list/display-math syntax
    - convert Markdown/OCR structure into professional LaTeX: headings become `\section`, `\subsection`, or `\subsubsection`; theorem, lemma, proposition, corollary, definition, remark, question, conjecture, and example blocks become `amsthm` environments; proofs become `proof` environments; lists become `itemize` or `enumerate`; display equations become LaTeX display math or equation environments
@@ -101,6 +103,7 @@ For PDF input, the run must also write:
 10. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
 11. After both PDFs have been generated, inspect `manuscript_with_comments.tex` before returning anything.
    - verify that it satisfies the criteria in this `SKILL.md` and follows the style of `references/commented-manuscript-template.tex`
+   - verify that it is faithful to the original paper and has not compressed, summarized, or omitted manuscript content while converting to LaTeX
    - reject it if it still contains line-by-line Markdown renderings, `\mline` wrappers, verbatim/texttt source dumps, escaped Markdown headings such as `\#`, raw `#` headings, or escaped inline math that should be real LaTeX math
    - if it fails this inspection, rewrite `manuscript_with_comments.tex` using `references/commented-manuscript-template.tex` as the structure, convert the manuscript into normal paper-style LaTeX, preserve all reviewer comments in blue, and recompile `manuscript_with_comments.pdf`
 12. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` only after the commented manuscript passes this inspection or after clearly reporting why it could not be corrected.

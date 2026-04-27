@@ -165,6 +165,8 @@ Then write `{local_dir}/manuscript_with_comments.tex` based on `{local_dir}/manu
 
 - use `references/commented-manuscript-template.tex` as the starting structure unless the original TeX source already has a better paper preamble
 - write real, valid LaTeX that can compile and visually reads like a professional mathematics paper; do not paste raw Markdown into the `.tex` file
+- preserve the original paper's content faithfully. The `.tex` file must contain the full manuscript content from `manuscript_with_comments.md`, including mathematical statements, proofs, formulas, labels, citations, definitions, notation, and section order, with only the minimal edits needed for OCR cleanup and valid LaTeX.
+- do not compress, summarize, paraphrase away, or selectively reconstruct the paper. Reviewer comments are additions to the manuscript, not replacements for manuscript text.
 - do not make a line-numbered transcript of Markdown. Avoid `\mline` commands, verbatim/texttt line dumps, or a source-code style rendering of the manuscript.
 - do not leave Markdown/OCR artifacts in the compiled paper. In particular, do not leave headings as escaped `\#`, emphasis as `\*...\*`, Markdown citations as raw markup when they can be expressed as prose or LaTeX, or inline math as escaped dollar signs.
 - include a complete LaTeX preamble and `\begin{document}` / `\end{document}`
@@ -204,6 +206,8 @@ The TeX file passes only if it satisfies `SKILL.md` and follows the structure an
 
 Reject and rewrite `{local_dir}/manuscript_with_comments.tex` if any of the following remain:
 
+- compressed reconstruction, summary, or shortened replacement of the original manuscript
+- omitted statements, proofs, formulas, definitions, citations, labels, or sections that appear in `{local_dir}/manuscript_with_comments.md`
 - line-by-line Markdown renderings
 - `\mline` wrappers
 - verbatim or `\texttt` source dumps of the manuscript

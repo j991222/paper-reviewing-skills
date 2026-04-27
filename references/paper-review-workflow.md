@@ -30,7 +30,7 @@ python3 {skill_dir}/scripts/prepare_paper.py --input "{paper_path}" --output-dir
 
 If the user pasted paper text, write it to `{local_dir}/paper.md` and run the same helper on that file.
 
-For PDF input, the helper first calls `scripts/mineru_pdf_to_markdown.py` and writes MinerU Markdown to `{local_dir}/paper_ocr.md`. If a non-empty `paper_ocr.md` exists, use that Markdown for the remaining preparation and review process; do not run embedded PDF text extraction. The MinerU API token must come from `MINERU_API_TOKEN`, `--mineru-token-file`, or `--mineru-token`. Never hardcode a token in skill files. If the helper reports a missing token, network failure, or MinerU failure and no non-empty `paper_ocr.md` exists, ask for the missing credential/tooling or a TeX/Markdown source. Do not use embedded PDF text fallback unless the user explicitly accepts it after MinerU fails to produce Markdown.
+For PDF input, the helper first calls `scripts/mistral_pdf_to_markdown.py` and writes Mistral OCR Markdown to `{local_dir}/paper_ocr.md`. If a non-empty `paper_ocr.md` exists, use that Markdown for the remaining preparation and review process; do not run embedded PDF text extraction. The Mistral API key must come from `MISTRAL_API_KEY`, `--mistral-api-key-file`, or `--mistral-api-key`. Never hardcode an API key in skill files. If the helper reports a missing key, network failure, or Mistral failure and no non-empty `paper_ocr.md` exists, ask for the missing credential/tooling or a TeX/Markdown source. Do not use embedded PDF text fallback unless the user explicitly accepts it after Mistral fails to produce Markdown.
 
 Use:
 
@@ -163,6 +163,9 @@ First write `{local_dir}/manuscript_with_comments.md`:
 
 Then write `{local_dir}/manuscript_with_comments.tex` based on `{local_dir}/manuscript_with_comments.md`:
 
+- write real, valid LaTeX that can compile; do not paste raw Markdown into the `.tex` file
+- include a complete LaTeX preamble and `\begin{document}` / `\end{document}`
+- convert Markdown headings, lists, blockquotes, displayed equations, and inline comments into valid LaTeX structures
 - include the manuscript's original content together with the inline comments
 - use `\usepackage{xcolor}`
 - render reviewer comments in blue, for example:
@@ -175,6 +178,7 @@ Then write `{local_dir}/manuscript_with_comments.tex` based on `{local_dir}/manu
 
 - keep comments near the relevant manuscript text, not collected at the end
 - do not overwrite the original manuscript source
+- before returning, compile the TeX; if compilation fails, fix the LaTeX and retry when feasible
 
 Compile the commented manuscript:
 

@@ -27,7 +27,7 @@ paper-reviewing-skills/
 │   └── paper-review-workflow.md
 └── scripts/
     ├── compile_latex.sh
-    ├── mineru_pdf_to_markdown.py
+    ├── mistral_pdf_to_markdown.py
     ├── prepare_paper.py
     └── search_arxiv_theorems.py
 ```
@@ -96,31 +96,31 @@ PDF runs also write:
 
 ```text
 local_dir/paper_ocr.md
-local_dir/mineru_ocr/
+local_dir/mistral_ocr/
 ```
 
 If PDF compilation fails, the corresponding `.tex` file is still preserved.
 
 ## PDF Requirements
 
-PDF input uses MinerU OCR to produce Markdown first:
+PDF input uses Mistral OCR to produce Markdown first:
 
-- install the Python `requests` package if it is not available
-- set `MINERU_API_TOKEN`, or pass `--mineru-token-file`
+- install the Python `mistralai` package if it is not available
+- set `MISTRAL_API_KEY`, or pass `--mistral-api-key-file`
 - output Markdown is written to `local_dir/paper_ocr.md`
-- MinerU zip/extract artifacts are written under `local_dir/mineru_ocr/`
+- Mistral OCR metadata is written under `local_dir/mistral_ocr/`
 - later preparation and review steps use non-empty `local_dir/paper_ocr.md`, not embedded PDF text
 - `paper_source.txt` is the normalized working copy; for successful PDF OCR it is written from `paper_ocr.md`
 
 Run preparation with:
 
 ```bash
-MINERU_API_TOKEN="..." python3 scripts/prepare_paper.py \
+MISTRAL_API_KEY="..." python3 scripts/prepare_paper.py \
   --input /path/to/paper.pdf \
   --output-dir /path/to/review-output
 ```
 
-The token should not be committed into the skill directory. The preparation script can use embedded PDF text only when MinerU fails to produce a non-empty `paper_ocr.md` and fallback is explicitly allowed:
+The API key should not be committed into the skill directory. The preparation script can use embedded PDF text only when Mistral OCR fails to produce a non-empty `paper_ocr.md` and fallback is explicitly allowed:
 
 ```bash
 python3 scripts/prepare_paper.py \
@@ -146,7 +146,7 @@ The final report follows [references/example_report.tex](references/example_repo
 Every issue in `verification.md` is also inserted into the commented manuscript artifacts:
 
 - first write `local_dir/manuscript_with_comments.md` with the original manuscript content and inline reviewer comments
-- then write `local_dir/manuscript_with_comments.tex` based on that Markdown
+- then write `local_dir/manuscript_with_comments.tex` as valid compilable LaTeX based on that Markdown, not as copied raw Markdown
 - render reviewer comments in blue in the TeX/PDF output
 
 The compiled output is `local_dir/manuscript_with_comments.pdf`.

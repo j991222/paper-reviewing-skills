@@ -24,7 +24,7 @@ paper_review_runs/{run_id}/
 Resolve paths relative to this skill directory.
 
 - Paper preparation helper: `scripts/prepare_paper.py`
-- MinerU PDF OCR-to-Markdown helper: `scripts/mineru_pdf_to_markdown.py`
+- Mistral PDF OCR-to-Markdown helper: `scripts/mistral_pdf_to_markdown.py`
 - arXiv theorem-search API helper: `scripts/search_arxiv_theorems.py`
 - LaTeX compiler helper: `scripts/compile_latex.sh`
 - Review workflow: `references/paper-review-workflow.md`
@@ -47,7 +47,7 @@ This is a skill, not a plugin. Do not require custom MCP tools. Use local files,
 
 When checking referenced statements, citations, or imported theorems, web search is allowed. Prefer primary sources such as the cited paper, arXiv source, publisher page, author manuscript, or official theorem statement; use the bundled arXiv theorem-search helper as an additional retrieval tool when it is useful.
 
-For PDF input, run the preparation helper. It first uses the MinerU API to OCR the PDF into Markdown at `{local_dir}/paper_ocr.md`, then uses that Markdown for all later extraction, chunking, and review steps. Do not run embedded PDF text extraction when a non-empty `paper_ocr.md` exists. The helper requires the Python `requests` package. The API token must come from `MINERU_API_TOKEN`, `--mineru-token-file`, or `--mineru-token`; never hardcode a token in this skill. If MinerU OCR fails and does not produce a non-empty `paper_ocr.md`, report the blocker and ask for a token, network access, or a TeX/Markdown source. Use `--allow-pdf-text-fallback` only if the user explicitly accepts embedded PDF text extraction after MinerU fails to produce Markdown.
+For PDF input, run the preparation helper. It first uses Mistral OCR to convert the PDF into Markdown at `{local_dir}/paper_ocr.md`, then uses that Markdown for all later extraction, chunking, and review steps. Do not run embedded PDF text extraction when a non-empty `paper_ocr.md` exists. The helper requires the Python `mistralai` package. The API key must come from `MISTRAL_API_KEY`, `--mistral-api-key-file`, or `--mistral-api-key`; never hardcode an API key in this skill. If Mistral OCR fails and does not produce a non-empty `paper_ocr.md`, report the blocker and ask for a key, network access, or a TeX/Markdown source. Use `--allow-pdf-text-fallback` only if the user explicitly accepts embedded PDF text extraction after Mistral fails to produce Markdown.
 
 ## Required Artifacts
 
@@ -65,7 +65,7 @@ Every review run must write:
 
 For PDF input, the run must also write:
 
-- `paper_ocr.md`: MinerU OCR Markdown
+- `paper_ocr.md`: Mistral OCR Markdown
 
 ## Workflow
 
@@ -73,7 +73,7 @@ For PDF input, the run must also write:
 2. Create the local output directory.
 3. Prepare the paper:
    - for TeX or Markdown, preserve source line numbers
-   - for PDF, run MinerU OCR-to-Markdown through `scripts/prepare_paper.py` and use section/subsection locations from the OCR Markdown
+   - for PDF, run Mistral OCR-to-Markdown through `scripts/prepare_paper.py` and use section/subsection locations from the OCR Markdown
 4. Read `references/paper-review-workflow.md`.
 5. Review the paper statement by statement:
    - split into theorem, lemma, proposition, corollary, definition, claim, remark, proof, and paragraph-level chunks as needed
@@ -89,6 +89,8 @@ For PDF input, the run must also write:
    - for TeX or Markdown input, start from the original source content
    - insert each reviewer comment immediately after the affected statement, proof step, paragraph, or displayed formula
 9. Author `manuscript_with_comments.tex` from `manuscript_with_comments.md`.
+   - write real, valid LaTeX that can compile; do not copy raw Markdown syntax into the `.tex` file
+   - include a complete preamble, document environment, required packages, and LaTeX section/list/display-math syntax
    - preserve the manuscript's original mathematical content as faithfully as possible
    - render review comments in blue, using `xcolor` and a clear comment style such as `\textcolor{blue}{...}` or a blue boxed/quoted reviewer-comment block
    - do not overwrite the original manuscript source

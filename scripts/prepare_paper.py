@@ -262,16 +262,14 @@ def extract_pdf(
     output_dir: Path,
     *,
     allow_text_fallback: bool = False,
-    mineru_token: str = "",
-    mineru_token_file: str = "",
-    mineru_poll_interval: int = 5,
-    mineru_timeout_seconds: int = 1800,
-    mineru_request_timeout: int = 60,
+    mistral_api_key: str = "",
+    mistral_api_key_file: str = "",
+    mistral_model: str = "mistral-ocr-latest",
 ) -> tuple[str, list[str]]:
     notes: list[str] = []
     markdown_path = output_dir / "paper_ocr.md"
-    mineru_dir = output_dir / "mineru_ocr"
-    mineru_script = Path(__file__).resolve().with_name("mineru_pdf_to_markdown.py")
+    mistral_dir = output_dir / "mistral_ocr"
+    mistral_script = Path(__file__).resolve().with_name("mistral_pdf_to_markdown.py")
     markdown_path.unlink(missing_ok=True)
     for stale_fallback in (
         output_dir / "paper_pdf_text_fallback.txt",
@@ -281,43 +279,39 @@ def extract_pdf(
 
     cmd = [
         sys.executable,
-        str(mineru_script),
+        str(mistral_script),
         "--input",
         str(path),
         "--output-dir",
-        str(mineru_dir),
+        str(mistral_dir),
         "--markdown-output",
         str(markdown_path),
-        "--poll-interval",
-        str(mineru_poll_interval),
-        "--timeout-seconds",
-        str(mineru_timeout_seconds),
-        "--request-timeout",
-        str(mineru_request_timeout),
+        "--model",
+        mistral_model,
     ]
-    if mineru_token:
-        cmd.extend(["--token", mineru_token])
-    if mineru_token_file:
-        cmd.extend(["--token-file", mineru_token_file])
+    if mistral_api_key:
+        cmd.extend(["--api-key", mistral_api_key])
+    if mistral_api_key_file:
+        cmd.extend(["--api-key-file", mistral_api_key_file])
 
     code, output = run_command(cmd)
-    notes.append("Ran MinerU OCR-to-Markdown.")
+    notes.append("Ran Mistral OCR-to-Markdown.")
     notes.append(output.strip())
     if markdown_path.is_file() and markdown_path.stat().st_size > 0:
         if code != 0:
             notes.append(
-                "MinerU helper returned a nonzero exit code but produced paper_ocr.md; "
+                "Mistral OCR helper returned a nonzero exit code but produced paper_ocr.md; "
                 "using the Markdown output and skipping embedded PDF text fallback."
             )
         notes.append("Using paper_ocr.md as the source for paper_source.txt and all later processing.")
         return read_text_file(markdown_path), notes
 
     notes.append(
-        f"MinerU OCR failed with exit code {code} and did not produce a non-empty paper_ocr.md."
+        f"Mistral OCR failed with exit code {code} and did not produce a non-empty paper_ocr.md."
     )
     if not allow_text_fallback:
         raise RuntimeError(
-            "MinerU OCR-to-Markdown failed. Set MINERU_API_TOKEN, pass --mineru-token-file, "
+            "Mistral OCR-to-Markdown failed. Set MISTRAL_API_KEY, pass --mistral-api-key-file, "
             "or rerun with --allow-pdf-text-fallback if embedded PDF text is acceptable."
         )
 
@@ -335,7 +329,7 @@ def extract_pdf(
         notes.append("pdftotext is not installed; PDF text extraction failed.")
 
     raise RuntimeError(
-        "Could not extract PDF text. Configure MinerU OCR or provide TeX/Markdown."
+        "Could not extract PDF text. Configure Mistral OCR or provide TeX/Markdown."
     )
 
 
@@ -344,11 +338,9 @@ def load_input(
     output_dir: Path,
     *,
     allow_pdf_text_fallback: bool = False,
-    mineru_token: str = "",
-    mineru_token_file: str = "",
-    mineru_poll_interval: int = 5,
-    mineru_timeout_seconds: int = 1800,
-    mineru_request_timeout: int = 60,
+    mistral_api_key: str = "",
+    mistral_api_key_file: str = "",
+    mistral_model: str = "mistral-ocr-latest",
 ) -> tuple[str, str, list[str]]:
     suffix = path.suffix.lower()
     notes: list[str] = []
@@ -361,11 +353,9 @@ def load_input(
             path,
             output_dir,
             allow_text_fallback=allow_pdf_text_fallback,
-            mineru_token=mineru_token,
-            mineru_token_file=mineru_token_file,
-            mineru_poll_interval=mineru_poll_interval,
-            mineru_timeout_seconds=mineru_timeout_seconds,
-            mineru_request_timeout=mineru_request_timeout,
+            mistral_api_key=mistral_api_key,
+            mistral_api_key_file=mistral_api_key_file,
+            mistral_model=mistral_model,
         )
         return text, "markdown", notes
     raise ValueError(f"Unsupported input extension: {suffix}")
@@ -378,13 +368,11 @@ def main() -> int:
     parser.add_argument(
         "--allow-pdf-text-fallback",
         action="store_true",
-        help="For PDFs, allow embedded text extraction if MinerU OCR is unavailable or fails.",
+        help="For PDFs, allow embedded text extraction if Mistral OCR is unavailable or fails.",
     )
-    parser.add_argument("--mineru-token", help="MinerU API token. Prefer MINERU_API_TOKEN.")
-    parser.add_argument("--mineru-token-file", help="File containing MinerU API token")
-    parser.add_argument("--mineru-poll-interval", type=int, default=5)
-    parser.add_argument("--mineru-timeout-seconds", type=int, default=1800)
-    parser.add_argument("--mineru-request-timeout", type=int, default=60)
+    parser.add_argument("--mistral-api-key", help="Mistral API key. Prefer MISTRAL_API_KEY.")
+    parser.add_argument("--mistral-api-key-file", help="File containing Mistral API key")
+    parser.add_argument("--mistral-model", default="mistral-ocr-latest")
     args = parser.parse_args()
 
     input_path = Path(args.input).resolve()
@@ -397,11 +385,9 @@ def main() -> int:
             input_path,
             output_dir,
             allow_pdf_text_fallback=args.allow_pdf_text_fallback,
-            mineru_token=args.mineru_token or "",
-            mineru_token_file=args.mineru_token_file or "",
-            mineru_poll_interval=args.mineru_poll_interval,
-            mineru_timeout_seconds=args.mineru_timeout_seconds,
-            mineru_request_timeout=args.mineru_request_timeout,
+            mistral_api_key=args.mistral_api_key or "",
+            mistral_api_key_file=args.mistral_api_key_file or "",
+            mistral_model=args.mistral_model,
         )
     except Exception as exc:  # noqa: BLE001
         print(f"prepare_paper.py: {exc}", file=sys.stderr)

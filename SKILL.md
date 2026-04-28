@@ -36,14 +36,6 @@ Resolve paths relative to this skill directory.
 
 ## Runtime Notes
 
-Before doing anything else for this skill, initialize the shell environment by running:
-
-```bash
-source /root/root/bashrc
-```
-
-If the runtime launches a fresh shell for each command, make sure commands that depend on that environment are run from a shell where `/root/root/bashrc` has been sourced.
-
 This is a skill, not a plugin. Do not require custom MCP tools. Use local files, the bundled scripts, and the browser/search tools exposed by the active runtime.
 
 When checking referenced statements, citations, or imported theorems, web search is allowed. Prefer primary sources such as the cited paper, arXiv source, publisher page, author manuscript, or official theorem statement; use the bundled arXiv theorem-search helper as an additional retrieval tool when it is useful.
@@ -70,26 +62,25 @@ For PDF input, the run must also write:
 
 ## Workflow
 
-1. Source `/root/root/bashrc` before any other action.
-2. Create the local output directory.
-3. Prepare the paper:
+1. Create the local output directory.
+2. Prepare the paper:
    - for TeX or Markdown, preserve source line numbers
    - for PDF, run Mistral OCR-to-Markdown through `scripts/prepare_paper.py` and use section/subsection locations from the OCR Markdown
-4. Read `references/paper-review-workflow.md`.
-5. Review the paper statement by statement:
+3. Read `references/paper-review-workflow.md`.
+4. Review the paper statement by statement:
    - split into theorem, lemma, proposition, corollary, definition, claim, remark, proof, and paragraph-level chunks as needed
    - check every statement in order
    - if a statement has no proof nearby, search its surrounding context for the proof
    - verify each proof beyond surface issues; look for critical mathematical errors
    - for wrong claims, try to construct counterexamples or explain plausible counterexample mechanisms
-6. Incrementally write and update `verification.md` after each chunk.
-7. Synthesize `final_report.tex` using `references/final-report-style.md`, `references/example_report.tex`, and `references/final-report-template.tex`.
-8. Author `manuscript_with_comments.md`.
+5. Incrementally write and update `verification.md` after each chunk.
+6. Synthesize `final_report.tex` using `references/final-report-style.md`, `references/example_report.tex`, and `references/final-report-template.tex`.
+7. Author `manuscript_with_comments.md`.
    - include the manuscript's original content together with every comment from `verification.md`
    - for PDF input, start from `{local_dir}/paper_ocr.md`
    - for TeX or Markdown input, start from the original source content
    - insert each reviewer comment immediately after the affected statement, proof step, paragraph, or displayed formula
-9. Author `manuscript_with_comments.tex` from `manuscript_with_comments.md`.
+8. Author `manuscript_with_comments.tex` from `manuscript_with_comments.md`.
    - use `references/commented-manuscript-template.tex` as the starting structure unless the original TeX source already has a better paper preamble
    - write real, valid LaTeX that compiles and reads like a normal mathematics paper; do not copy raw Markdown syntax into the `.tex` file
    - be faithful to the original paper's content: preserve the full manuscript text, mathematical statements, proofs, formulas, labels, citations, definitions, and section order except for unavoidable OCR cleanup and LaTeX syntax repair
@@ -100,13 +91,13 @@ For PDF input, the run must also write:
    - preserve the manuscript's original mathematical content as faithfully as possible
    - render review comments in blue, using `xcolor` or the base `color` package and a clear comment style such as `\textcolor{blue}{...}` or a blue boxed/quoted reviewer-comment block
    - do not overwrite the original manuscript source
-10. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
-11. After both PDFs have been generated, inspect `manuscript_with_comments.tex` before returning anything.
+9. Compile `final_report.tex` and `manuscript_with_comments.tex` with `scripts/compile_latex.sh`.
+10. After both PDFs have been generated, inspect `manuscript_with_comments.tex` before returning anything.
    - verify that it satisfies the criteria in this `SKILL.md` and follows the style of `references/commented-manuscript-template.tex`
    - verify that it is faithful to the original paper and has not compressed, summarized, or omitted manuscript content while converting to LaTeX
    - reject it if it still contains line-by-line Markdown renderings, `\mline` wrappers, verbatim/texttt source dumps, escaped Markdown headings such as `\#`, raw `#` headings, or escaped inline math that should be real LaTeX math
    - if it fails this inspection, rewrite `manuscript_with_comments.tex` using `references/commented-manuscript-template.tex` as the structure, convert the manuscript into normal paper-style LaTeX, preserve all reviewer comments in blue, and recompile `manuscript_with_comments.pdf`
-12. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` only after the commented manuscript passes this inspection or after clearly reporting why it could not be corrected.
+11. Return the paths to `verification.md`, `final_report.pdf`, and `manuscript_with_comments.pdf` only after the commented manuscript passes this inspection or after clearly reporting why it could not be corrected.
 
 ## Verification Standards
 

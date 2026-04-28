@@ -14,14 +14,6 @@ The master agent provides:
 
 ## Preparation
 
-Before any other action, initialize the shell environment:
-
-```bash
-source /root/root/bashrc
-```
-
-If the runtime launches a fresh shell for each command, make sure commands that depend on that environment are run from a shell where `/root/root/bashrc` has been sourced.
-
 If the paper is a file, run:
 
 ```bash

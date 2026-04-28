@@ -59,12 +59,6 @@ openclaw skills list
 
 ## Usage
 
-The skill first initializes its shell environment with:
-
-```bash
-source /root/root/bashrc
-```
-
 ```text
 Use $paper_reviewing_skills to review /path/to/paper.tex.
 Write outputs to /path/to/review-output.
